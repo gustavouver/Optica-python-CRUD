@@ -11,20 +11,20 @@ Usando las tecnologías:
 import os
 import json
 import shutil
+import imagenes_ui
 from VentanaPrincipal import Ui_MainWindow
 from VentanaEdicion import Ui_Dialog
-#import images.resources
 #from PyQt5.uic import loadUi
 # pylint: disable=no-name-in-module
 from PyQt5.QtCore import QDate, Qt
 from PyQt5.QtGui import QIntValidator, QFont, QIcon
 from PyQt5.QtSql import QSqlDatabase, QSqlTableModel
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QDialog, QMessageBox,
-                             QAbstractItemView, QFileDialog, QHeaderView)
+                            QAbstractItemView, QFileDialog, QHeaderView)
 #from ventana_principal import Ui_MainWindow (ventana para conectarse con la clase responsable de la parte grafica)
 #from ventana_edicion import Ui_Dialog (ventana de edición de usuario)
 from conexion import (create_db_connection, delete_db_connection, add_client_connection,
-                      edit_client_connection, delete_client_connection)
+                    edit_client_connection, delete_client_connection)
 
 # Clase principal que hereda de QMainWindow - Nombre de la ventana(Clase de la ventana)
 class MainWindow(QMainWindow):
@@ -604,12 +604,12 @@ class EditDialog(QDialog):
         self.id_cliente = id_cliente
         self.database_name = database_name
 
-        # Instancia de la clase generada en VentanaPrincipal.py
-        self.ui_ventana_edicion = Ui_Dialog()
-        self.ui_ventana_edicion.setupUi(self)
-
         # Cargar la interfaz de usuario desde el archivo .ui
         #loadUi("VentanaEdicion.ui", self)
+
+        # Ui_Dialog() es una instancia de la clase generada en VentanaEdicion.py equivalente a: loadUi("VentanaEdicion.ui", self)
+        self.ui_ventana_edicion = Ui_Dialog()
+        self.ui_ventana_edicion.setupUi(self)
 
         int_validator = QIntValidator()
         self.ui_ventana_edicion.in_edad_edit.setValidator(int_validator)
