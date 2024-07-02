@@ -5,7 +5,7 @@ Programa CRUD con creado con las siguientes tecnologias:
 -Conda (Versión: 23.11.0)
 -git (Version 2.43.0.windows.1)
 
-Enfocado en solucionar las administración e información de los clientes en una optica, con la capacidad de 
+Enfocado en solucionar las administración e información de los clientes en una optica, con la capacidad de:<br>
 -Crear clientes y guardarlos en una tabla interactiva, capacidad de editarlos desde la tabla o desde una ventana externa y eliminar los clientes.
 -Capacidad para crear, copiar, seleccionar y eliminar la base de datos.
 -Buscar clientes por nombre o fecha de registro.
