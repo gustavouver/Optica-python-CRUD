@@ -91,32 +91,39 @@ class MainWindow(QMainWindow):
         ''' Configurar la conexión a la base de datos'''
         self.db = QSqlDatabase.addDatabase("QSQLITE")
         _, _, _, json_file_path = self.get_path()
-        # Verifica si la ruta "json_file_path" existe
-        if os.path.exists(json_file_path):
-            try:
-                # Abre el archivo "json_file_path" en modo lectura ("r" de read)
-                with open(json_file_path, "r", encoding="utf-8") as json_read:
-                    json_file = json.load(json_read)
-                    # Verificar si el diccionario tiene la clave "last_selected_db"
-                    if "last_selected_db" in json_file:
-                        last_selected_db = json_file["last_selected_db"]
-                        # Se establece la conexión y etiqueta de la base de datos solo si "last_selected_db" existe y es valido
-                        if last_selected_db and os.path.exists(last_selected_db):
-                            self.db.setDatabaseName(last_selected_db)
-                            base_name = os.path.basename(last_selected_db).replace(".db", "")
-                            self.ui_ventana_principal.database_path_label.setText(base_name)
-                        else:
-                            # La base de datos especificada en el archivo JSON no existe o la ruta está vacía
-                            self.ui_ventana_principal.database_path_label.setText("La ruta de la base de datos cambió o no existe.")
-                    else:
-                        # No hay información en la clave "last_selected_db" del archivo JSON
-                        self.ui_ventana_principal.database_path_label.setText("No existe conexión a ninguna base de datos.")
-            except json.decoder.JSONDecodeError:
-                # Manejar la excepción cuando el archivo JSON existe pero está vacío
-                self.ui_ventana_principal.database_path_label.setText("El archivo JSON está vacío.")
-        else:
+        # Verifica si la ruta dentro de JSON (json_file_path) existe
+        if not os.path.exists(json_file_path):
             # No existe el archivo JSON
             self.ui_ventana_principal.database_path_label.setText("No existe conexión con ninguna base de datos.")
+            return
+        
+        try:
+            # Intenta abrir el archivo "json_file_path" en modo lectura ("r" de read)
+            with open(json_file_path, "r", encoding="utf-8") as json_read:
+                json_file = json.load(json_read)
+        except json.decoder.JSONDecodeError:
+            # Manejar la excepción cuando el archivo JSON existe pero está vacío
+            self.ui_ventana_principal.database_path_label.setText("El archivo JSON está vacío.")
+            return
+
+        # Verificar si el JSON tiene la clave "last_selected_db"
+        if not "last_selected_db" in json_file:
+            # No hay información en la clave "last_selected_db" del archivo JSON
+            self.ui_ventana_principal.database_path_label.setText("No existe conexión a ninguna base de datos.")
+            return
+        
+        # Se guarda en una variable la ruta con la clave last_selected_db dentro del archvio JSON
+        last_selected_db = json_file["last_selected_db"]
+
+        # Comprueba que la base de datos especificada en el archivo JSON exista y no este vacia
+        if not last_selected_db or not os.path.exists(last_selected_db) or not last_selected_db.endswith(".db"):
+            self.ui_ventana_principal.database_path_label.setText("La ruta de la base de datos cambió, no existe o no es un archivo de base de datos.")
+            return
+
+        # Se establece la conexión y etiqueta de la base de datos solo si "last_selected_db" existe y es valido
+        self.db.setDatabaseName(last_selected_db)
+        base_name = os.path.basename(last_selected_db).replace(".db", "")
+        self.ui_ventana_principal.database_path_label.setText(base_name)
 
 
     def setup_actions(self):
